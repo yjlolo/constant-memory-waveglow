@@ -3,11 +3,22 @@ import json
 import argparse
 import torch
 import data_loader.data_loaders as module_data
+# from data_loader.dataset import MAESTRO
+from torch.utils.data import Dataset, DataLoader
 import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
 from trainer import Trainer
 from utils import Logger
+
+# batch_size = 8 
+# seq_len = 16000
+# train_ds = MAESTRO(size=batch_size*, path='/data/MAESTRO', groups=['train'], sequence_length=seq_len)
+# train_dl = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0)
+# val_ds = MAESTRO(path='/data/MAESTRO', groups=['validation'], sequence_length=seq_len)
+# val_dl = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0)
+# test_ds = MAESTRO(path='/data/MAESTRO', groups=['test'], sequence_length=seq_len)
+# test_dl = DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=0)
 
 
 def get_instance(module, name, config, *args):
@@ -19,7 +30,7 @@ def main(config, resume):
     # setup data_loader instances
     steps = config['trainer']['steps']
     data_loader = get_instance(module_data, 'data_loader', config, steps)
-    #valid_data_loader = data_loader.split_validation()
+    valid_data_loader = data_loader.split_validation()
 
     # build model architecture
     model = get_instance(module_arch, 'arch', config)

@@ -1,4 +1,5 @@
 import soundfile as sf
+import json
 from base import BaseDataLoader
 from torch.utils.data import Dataset
 import os
@@ -91,10 +92,16 @@ class _WAVDataset(Dataset):
                 return int(data / byte_sec * sr)
 
         print("Gathering training files ...")
-        for f in tqdm(os.listdir(self.data_path)):
+        metadata = json.load(open(os.path.join('/data/yinjyun/datasets/', 'maestro-v2.0.0.json')))
+        files = sorted([os.path.join(self.data_path, row['audio_filename']) 
+                    for row in metadata if row['split'] == 'train'])
+        # print(files)
+        # for f in tqdm(os.listdir(self.data_path)):
+        for f in tqdm(files):
             if f.endswith('.wav'):
-                filename = os.path.join(self.data_path, f)
-                f_obj = sf.SoundFile(filename)
+                # filename = os.path.join(self.data_path, f)
+                # f_obj = sf.SoundFile(filename)
+                f_obj = sf.SoundFile(f)
                 self.files.append(f_obj)
                 self.file_lengths.append(get_nframes(f_obj.extra_info))
 
